@@ -311,6 +311,36 @@ tape("bisector(accessor).right(array, value) handles large sparse arrays", funct
   test.end();
 });
 
+tape("bisector(accessor).center(array, value) returns the closest value", function(test) {
+  var data = [0,1,2,3,4],
+      bisectCenter = arrays.bisector(d => +d).center;
+  test.equal(bisectCenter(data, 2), 2);
+  test.equal(bisectCenter(data, 2.2), 2);
+  test.equal(bisectCenter(data, 2.6), 3);
+  test.equal(bisectCenter(data, 3), 3);
+  test.end();
+});
+
+tape("bisector(comparator).center(array, value) returns the closest value", function(test) {
+  var data = [0,1,2,3,4],
+      bisectCenter = arrays.bisector((d, x) => +d - x).center;
+  test.equal(bisectCenter(data, 2), 2);
+  test.equal(bisectCenter(data, 2.2), 2);
+  test.equal(bisectCenter(data, 2.6), 3);
+  test.equal(bisectCenter(data, 3), 3);
+  test.end();
+});
+
+tape("bisector(non-numeric comparator).center(array, value) returns the left value", function(test) {
+  var data = [0,1,2,3,4],
+      bisectCenter = arrays.bisector((d, x) => +d > x ? 1 : -1).center;
+  test.equal(bisectCenter(data, 2), 2);
+  test.equal(bisectCenter(data, 2.2), 2);
+  test.equal(bisectCenter(data, 2.6), 2);
+  test.equal(bisectCenter(data, 3), 3);
+  test.end();
+});
+
 function box(value) {
   return {value: value};
 }
