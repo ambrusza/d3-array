@@ -16,6 +16,19 @@ export function rollups(values, reduce, ...keys) {
   return nest(values, Array.from, reduce, keys);
 }
 
+export function index(values, ...keys) {
+  return nest(values, identity, indexReduce, keys);
+}
+
+export function indexes(values, ...keys) {
+  return nest(values, Array.from, indexReduce, keys);
+}
+
+function indexReduce(values) {
+  if (values.length !== 1) throw new Error("non-unique key");
+  return values[0];
+}
+
 function nest(values, map, reduce, keys) {
   return (function regroup(values, i) {
     if (i >= keys.length) return reduce(values);
